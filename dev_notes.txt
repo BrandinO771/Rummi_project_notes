@@ -1,0 +1,437 @@
+   
+    ====================
+    ON 2/18/21 THURSDAY
+    =====================
+    * TODAY  I WIDENED THE SCREEN FOR MORE PLAY
+    * TODAY  ADDED A DELAY TIMER AFTER PRESS CHECK GROUP BUTTON , AND BEFORE AI MOVE ASSESOR , SO MY PLAYER NEW TILE IS MADE AND APPENDED BEFORE AI TILES ARE MADE
+         - THIS TIMER NEEDS REFACTORING > ONLY RUN IF PLAYER DIDNT MAKE A NEW PLAY
+    <ERROR> FROM TIME TO TIME RANDOMLY , THE FOLLOWING VAR < ai_tiles_to_play: > WILL SEND A DUPLICATE SET OF TILE TO PUT ON THE BOARD  
+    * THERE IS A RANDOM ERROR - WHERE DUPLIATES SENT TO THE BOARD BY AI
+    * ON MONDAY i WIRED UP THE APP SO I AUTO PLAY THE AI AFTER HITTING THE CHECK GROUP BUTTON 
+    * WROTE SEVERAL algorithmS TO ASSESS ME PLAY AND DETERMINE IF NEEDEED A NEW TILE 
+
+
+    ====================
+    ON 2/14/21 SUNDAY 5-8:20 PM
+    =====================
+    + had one error recorded in < curr_error_log.txt > where a 13 was requested by  ai_moves_decider10 to make two 13s in same div or it sent a duplicate obj to create a 13 twice
+    
+    + i got up to 11 groups and it was taking 13+ seconds to print all the console prints , JS will do the work first like place tiles, then do all the console prints
+        + go through <ai_moves_decider10  > add add following line infront of all console prints:
+            if ( printLogs == 1 ) console.log('blah blah')
+            +either assign a number to the log so we can isolate certain ones 
+    >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    + OK think we fixed RECURSIVE infinite loop in < ai_moves_decider script> curr on ver 10 
+
+    was --- simple error of not adding div id to list that ensure we dont review divs more than once
+    the question is what is diff between < dontEvaluateTheseGameGrpsAgain > and < all_played_grps_ids > I should 
+    really only need < all_played_grps_ids >  and not the other to avoid checking same groups again
+
+    ai_moves_decider line 643:>> below added  && !all_played_grps_ids.includes( tile_group_category.div_id )
+    643: if ( !max_suit_list.includes( curr_suit ) && !all_played_grps_ids.includes( tile_group_category.div_id )  )
+
+    And line 682 - 687:
+    if( !dontEvaluateTheseGameGrpsAgain.includes(tile_group_category.div_id) )
+                    { 
+                        dontEvaluateTheseGameGrpsAgain.push(tile_group_category.div_id);
+                        console.log("just addded div id to < dontEvaluateTheseGameGrpsAgain >",  dontEvaluateTheseGameGrpsAgain, 'tile_group_category.div_id ', tile_group_category.div_id);
+                    }
+    >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    
+    ON 2/5/21 12:30 -6:00  () 30 break) hours :
+     *<<< INVESTIGATE THIS >>>
+     SEE < CURR_ERR_LOGS.TX > INFINITE LOOP RECURSIVE CALL TO -- MAP GAME BOARD TILES TO AI RACK --
+      - IT KEPT RUNNING BECAUSE IT WOULD NOT EVALUATE ALL OF THE GROUPS ON THE BOARD 
+         THE CODE IS TO KEEP CHECKING  IF OUR LIST OF EVALUATED DIV IDS >= THAN THE GROUPS ON THE BOARD -- 
+         THE CODE LOOKS CORRECT NOT SURE WHY IT WOULDNT FINISH LOOPING THROUGH ALL GAME GROUPS AND FINISH INSPECTING ???  
+       
+
+    *<<THIS IS FIXED >>>
+        if human player plays - we need to reset - newContainerId  before ai plays - I fixed this when player hits button they are done
+
+    *<<THIS IS FIXED >>> 
+        need to fix - prepending - and if the first slot in a group is empty we need to append to that - meaning if player moved all tiles 
+        []= blank slot, like {4567[]}, ait will play {34[]567[]} needs to play {34567[]} 
+     
+    *<<THIS IS FIXED >>>
+        this variable : dontEvaluateTheseGameGrpsAgain = []
+        wasnt clearing out the second time in <ai_moves_decider9.js>  so AI was avoiding existing groups I think
+    
+    *<<THIS IS FIXED >> 
+        - I WASNT REMOVING FULL PLAYABLE OF KIND SETS WITH DUPLICATES - JUST SINGLE TILES IF DUPE EXISTED IN SET OF 4 OF KIND
+        ["triangle-4-1", "circle-9-2", "square-10-1", "circle-11-1", "square-2-2", "diamond-3-2", "circle-2-2", "square-5-1", "triangle-12-1", "circle-13-2", "diamond-10-2", "diamond-1-1", "square-6-1", "circle-10-1"]
+    
+    
+    
+    ON 2/4/21 10:00 - 5:00  (2-3) hours other stuff:
+        
+      * [ rumi_brain11_test1A.js ] is most recent file for testing against test gameboard lists 
+      * [ rumi_brain11_test4.js  ] is the most current file Hooked Back up to 'ai_moves_decider9.js' for next current developement 
+
+        * THERE WERE ISSUES FROM YESTERDAY APPENDING SINGLE TILES CONSECUTIVELY , i REALIZE MY SOLUTION FOR CREATING 
+         NEW SLOT ID TO BE THE NEXT HIGHEST NUMBER WAS WRONG
+         * FINALLY GOT IT ALL WORKING - REFACTORED ABUNCH, REMOVED THE TESTING PARAMETERS 
+
+            - REHOOKED UP THE 'ai_moves_decider9.js' its mostly working 
+                -but there are some bugs recorded in the 'curr_error_log' were I think it infinitely could not decide to play 
+                    3 tiles as new set or attach to an existing set 
+           -> Also need to fix 
+                - div_ct for new containers - just do same search of all groups and find out the next highest id number to assign
+            -> Need solution for putting down  4th tile of 3 of a kind - should be easy  
+                    @@ BUT MAKE SURE the 4th tiles is included as a single in array = ['triangle-2-1'] currently its
+                        just a string 'triangle-2-1' so it works with other functions 
+            -> Also need solution for playing tiles on both ends of a group on same turn
+
+    ON 2/3/21 10:00 - 2:15
+        *by 2:15 <<<GREAT !!!>>> I HAVE APPEND AND PREPEND TILES TO EXISTING GROUP WORKING AND MAKE NEW GROUP!!!
+        * PUSHING THIS BUILD , THEN TRY STRINGING PREPEND AND APPEND TO SAME GROUP IN SAME FOR LOOP! 
+   
+    ON 2/2/21 10:30 - 5:45 [1 HOUR BREAK]
+     * really buggy trying to get a loose tile added to existing straight 
+      - intergration into existing functions was tricky 
+      -notresolving the promise can cause for loop to go nuts and spin to infinity
+      - next step is to create a focused test where we generate a known group and have ai  append  to it etc.... 
+      - i think things are working but cant be sure - 
+      !! also spilled diet coke on the key board , i popped off 2 keys to dry it and its impossible to get them back on I have
+        NO idea how they assemble this thing  i almost smashed it on the ground but its like 50 bucks !!
+
+
+    ON 2/1/21 10:30 - 7:25 [1 HOUR BREAK]
+        * FOUND A FEW ERRORS IN ADDING SELF MADE GROUPS TO PLAYABLE, AND REMOVING DUPLICATES WHEN IN STRAIGHT SETS TOOK 2 HOURS TO FIND AND FIX 
+        * SPENT REMAINDER OF DAY GETTING:
+                ASYNC / PROMISE TO WORK - TO MAKE NEW GROUPS AND --
+                 TO AWAIT EACH TILE BEING MADE AND GET THE TIMIMG CORRECT SO A COMPLETE  GROUP  COULD FINISH  BEFORE THE NEXT STARTED
+        - NEXT > adding individual tiles to existing groups 
+     
+    ON 1/30/21 - 12-2 DID SOMETHING PROB JUST ADDED SELF MADE GROUPS TO PLAYABLE GROUP 
+
+    ON 1/29/21 - 11:30 - 6:00
+            - ADDED finding ai tile to play with existing groups of 3 of kind 
+            - felt good enough to weave all together and start working towards playable prototype of player vs ai
+            - i thought wrongly that seperate scripts could access variables of other scripts which doesn't seem to be the creates
+                - so i had to wrap all scripts within functions and pass data back and  forth from the functions to the main script
+                -RUMI_BRAIN10,
+            - NEXT 
+                * need go back to 'ai_moves_decider' and  incorporate all ai-self-made sets 
+                into the returned 'add_ai_tiles_gb_group'  and categorize each of those as properties as
+                    div_id: 'new_div',
+                    addTilesMethod: 'append',
+                * then we just need to create the function to iterate through this obj and call existing functions 
+                to places these tiles on the board 
+
+    SEVERAL DEV ENTRYS FROM 1/24 - 1/29 in the 'ai_moves_decider.js'  files 
+
+    ON 1/26/21 - [ 2.5 HOURS ]
+            - EXPORTED EVALUATE PLAYED GRROUPS CODE TO ITS ON SCRIPT FILE FROM RUMI_BRAIN9.js
+            - DEVELOPED THE DATA STRUCTURE TO ORGANIZE ALL PLAYED GROUPS ON THE GAME BOARD
+            - NOW NEED TO START COMPARING PLAYED GROUPS TO AI TILE RACK AND SEE WHATS PLAYABLE ...
+    
+    ON 1/25/21 - [ AI MAKING GROUPS WITH EXISTING GAME BOARD TILES]
+
+        EXAMPLE 1 :             
+            ONLY 1  TILE FOR A SUIT IN AI RACK : 
+            - OPTION 1 : LOOK FOR AN EXISTING GROUP TO ATTACH THIS TILE TO END OF 
+            - OPTION 2 : LOOK FOR A GROUP TO SPLIT AND ATTACH THIS TILE TO END OF NEW SPLIT GROUP
+        EXAMPLE 2 : 
+            1 UNGROUPED UNIQUE TILE FOR A SUIT IN AI RACK :
+            - OPTION 3 : AI HAS SQUARE 1, & 3, NOW AI LOOKING TO STEAL AN AVAILABLE (2) TILE FROM GAME BOARD TO MAKE A SET 1,(2),3
+            - OPTION 4 : AI HAS SQUARE 1, 4,5  NOW LOOKING TO STEAL (2,3)  FROM ONE OR MORE GROUPS TO MAKE SET 
+        SUMMARY SOLUTIONS :
+            A. WHILE THESE LOOK LIKE 4 DISTINCT SCENARIOS PERHAPS THERE IS A SINGLE SOLUTION TO SOLVE 
+                IF WE CREATE ANOTHER HASHMAP AND MAP AVAILABLE TILES TO OUR ORGANIZED AI TILE LIST WE CAN EVALUATE AND MAKE COMPARISONS EASIER 
+                 -BUT WHERE TO DRAW THE LINE, 
+                 -HOW TO KNOW IF CREATING NEW GROUP ON THE BOARD OR ADDING TOO...
+                 -HOW NOT TO OVERRIDE AI TILES WITH GB TILES IN THIS MAP?
+
+        ai_tiles_consolidated
+        {
+        triangle: [{
+              group_ai_rack : [ 
+                                { id: 'blank,         num: 100 },
+                                { id: 'triangle-1-1', num: 1  },
+                                { id: 'triangle-2-1', num: 2  },
+                                { id: '',             num: -1 },
+                                { id: '?', num: 4  },
+                                { id: '?', num: 4  },
+                                { id: 'triangle-6-1', num: 6  },
+                                { id: 'triangle-7-1', num: 7  },
+                              ],
+             'group_id_123' : [ 
+                                { id: 'blank', num: 100 },
+                                { id: 'triangle-3-1', num: 3  },
+                                { id: 'triangle-4-1', num: 4  },
+                                { id: 'triangle-5-1', num: 5  },
+                                { id: 'triangle-6-1', num: 6  },                                 
+                              ],
+            'group_id_345'  : [ 
+                                { id: 'blank, num: 100 },
+                                { id: 'triangle-6-1', num: 6 },
+                                { id: 'triangle-7-1', num: 7 },
+                                { id: 'triangle-8-1', num: 8 }, 
+                                { id: 'triangle-9-1', num: 9 },                               
+                              ],
+                  ]}
+        }
+
+        ASSESS THIS STRUCTURE FOR ACTION :
+            1. LENGTH = 3 , ADD AI TILE TO 
+            2. LENGTH = 4 , ADD AI TILE TO, OR STEAL  = 1 FROM THIS GROUP 
+            3. LENGTH = 5 , ADD AI TILE TO, OR STEAL <= 2 FROM THIS GROUP
+            4. LENGTH = 6 , ADD AI TILE TO, OR STEAL <= 3, OR SPLIT GROUP IN HALF, FROM THIS GROUP 
+            5. LENGTH >= 7, ADD AI TILE TO, OR STEAL <= 4, OR SPLIT GROUP IN EVEN ODD GROUPS, FROM THIS GROUP 
+
+            CONCLUSIONS : 
+            1. FIRST ATTEMPT TO  MAP AI AVAIL TILES TO GROUP 
+            2. SECOND ATTEMPT TO  MAP GAME BOARD GROUP TO AI AVAILABLE TILES
+            2.5 NOTE 1,AND 2 ABOVE CAN HAPPEN IN ANY ORDER 2,1 OR 1,2 , IF YOU DO 2,1 WE PROB GET MORE SMALL SETS OF TILE GROUPS ON BOARD, IF 1,2 HAVE LARGER GROUPS WHICH ARE EASIER TO STEAL FROM 
+            3. AFTER THE EASY STUFF DONE WHICH IS EITHER ADDING TO ENDS OF EXISTING  GAME BOARD OR AI GROUP THEN...
+            4. NEXT IF GAME BOARD GROUP BIGGER THAN 6 SPLIT IN HALF AND SEE IF CAN ADD AI TILES TO ENDS OF IT OR GRP TILES TO AI ENDS ....
+            5. IF GAME BOARD GROUP BIGGER THAN 6 START TAKING THE MIDDLE TILES AND MAPPING THOSE TO A MASTER MIX LIST AND SEE IF WE CAN 
+               JOIN MULTIPLE AVAILABLES INTO A NEW GROUP
+
+              group_ai_to_play : [ 
+                                { loc: '?',       id: 'blank, num: 100 },
+                                { loc: 'ai_rack', id: 'triangle-1-1',  num: 1  },
+                                { loc: 'ai_rack', id: 'triangle-2-1',  num: 2  },
+                                { loc: 'gp_123',  id: 'triangle-3-1',  num: 3  },
+                                { loc: ?,         id: '?',             num: 4  },
+                                { loc: ?,         id: '?',             num: 5  },
+                                { loc: 'ai_rack', id: 'triangle-6-1',  num: 6  },
+                                { loc: 'ai_rack', id: 'triangle-7-1',  num: 7  },
+                                { loc: '?',       id: '?',             num: 8  },
+                                { loc: '?',       id: '?',             num: 9  },
+                              ],
+                              //-> ITERATE THROUGH GROUPS BELOW CAN TAKE A TILE FROM ENDS OF LIST ONLY IF NOT ALREADY IN 'ai_to_play' :
+                            //--> IF 4 OR MORE ATTEMPT TO MAP END TILES INTO 'ai_to_play' 
+             'group_id_123' : [ 
+                                { id: 'blank', num: 100 },
+                                { id: 'triangle-3-1', num: 3  },
+                                { id: 'triangle-4-1', num: 4  },
+                                { id: 'triangle-5-1', num: -1 },
+                                { id: 'triangle-6-1', num: -1 },                                 
+                              ],
+                                 //--> IF 3 ATTEMPT TO MAP ALL TILES 'ai_to_play' , IF AI TILES HAS ANY OF THE TILES IN THIS GROUP DO NOT MAP
+                                //--> BUT THEN WE WOULD MISS ADDING 6 TO THIS GROUP FROM AI_RACK? SO FOR TILE GROUPS OF 3 WE SHOULD CREATE A NEW
+                                // MAP AND JUST PLUG ALL AI_TILES INTO IT AND LOOK FOR A MATCH
+            'group_id_345'  : [ 
+                                { id: 'blank, num: 100 },
+                                { id: 'triangle-7-1', num: 7 },
+                                { id: 'triangle-8-1', num: 8 }, 
+                                { id: 'triangle-9-1', num: 9 }, 
+            'group_id_789'  : [ 
+                                { id: 'blank, num: 100 },
+                                { id: 'triangle-1-1', num: 1 },
+                                { id: 'triangle-2-1', num: 2 }, 
+                                { id: 'triangle-3-1', num: 3 },   
+                                { id: 'triangle-4-1', num: 4 },
+                                { id: 'triangle-5-1', num: 5 },    
+                                { id: 'triangle-6-1', num: 6 },    
+                                { id: 'triangle-7-1', num: 7 },
+                                { id: 'triangle-8-1', num: 8 },
+                                //--> FOR 3 OR MORE CREATE NEW 13 LONG DICT , ATTEMPT TO MAP AI TILES INTO IT, IF MAP LOC BLANK OR = '?'
+            group_id_345_eval  : [ 
+                                { loc: '?',       id: 'blank, num: 100 },
+                                { loc: 'ai_rack', id: 'triangle-1-1',  num: 1  }, XXX !! THIS COULD HAPPEN IF MATCH NOT FOUND YET AND THESE NOT REMOVED FROM FROM ai_to_play list, once match found, AND THE 1,2 WOULD BE REMOVED 
+                                { loc: 'ai_rack', id: 'triangle-2-1',  num: 2  },
+                                { loc: '?',       id: '?',             num: 3  },
+                                { loc: ?,         id: '?',             num: 4  },
+                                { loc: ?,         id: '?',             num: 5  },
+                                { loc: 'ai_rack', id: 'triangle-6-1',  num: 6  },
+                                { loc: 'gp_345'   id: 'triangle-7-1',  num: 7  },
+                                { loc: 'gp_345'   id: 'triangle-8-1',  num: 8  },
+                                { loc: 'gp_345'   id: 'triangle-9-1',  num: 9  },
+                                { loc: '?',       id: '?',             num: 10  },
+                                { loc: '?',       id: '?',             num: 11  },
+                                { loc: '?',       id: '?',             num: 12  },
+                                { loc: '?',       id: '?',             num: 13  },
+                                { loc: '?',       id: '?',             num: J   },
+
+                                //->ATTEMPT TO SPLIT EXISTING GAME BOARD GROUP:
+          group_id_789_eval  : [ 
+                                { loc: '?',       id: 'blank, num: 100 },
+                                { loc: '?',       id: ?,               num: 1  }, 
+                                { loc: 'ai_rack', id: 'triangle-2-1',  num: 2  },
+                                { loc: 'ai_rack', id: 'triangle-3-1',  num: 3  },
+                                { loc: 'ai_rack', id: 'triangle-4-1',  num: 4  },
+                                { loc: 'gp_789'   id: 'triangle-5-1',  num: 5  },
+                                { loc: 'gp_789'   id: 'triangle-6-1',  num: 6  },
+                                { loc: 'gp_789'   id: 'triangle-7-1',  num: 7  },
+                                { loc: '?',       id: '?',             num: 8  },
+                                { loc: '?',       id: '?',             num: 9  },
+                                { loc: '?',       id: '?',             num: 10  },
+                                { loc: '?',       id: '?',             num: 11  },
+                                { loc: '?',       id: '?',             num: 12  },
+                                { loc: '?',       id: '?',             num: 13  },
+                                { loc: '?',       id: '?',             num: J   },
+
+
+
+
+    
+    ON 1/18/21  -   [ TODAYS WORK 4 hours ... ] 
+        *[COMPLETED IN 5 MIN EASY ] error in css having the 1 second translate on for Tile class so AI can move tiles to pos 
+            - I will have to probably have to update the transition time prior to move and after 
+        *[COMPLETE] REFACTORED ai_moves_decider code to use filter to remove question marks from 'ofkind' array instead of for loop and splice
+        *[ NOT THERE YET ] HOPE TO HAVE AI MOVES WORKING - PLACING TILES AND THEN USER PLACE TILES TODAY...WE'LL SEE ..
+        *[ COMPLETED NEEDS TESTING ] This was 2.5 hours - added functions to ai_moves_decider.js to determine if we have same tile in both moves lists and if so which list
+            - will score more points or more tile quantity, also there is the possibility that the duplicate of the matching tile
+                exists in ai tile rack and was not placed in either moves list and we should check for it in the ai tile rack 
+                and replace the match tile with the second version of it 'square-2-1' with 'square-2-2', and if no match tile found 
+                and the ofkind tiles is 4 we will just remove the dupe and still play this ofkind group!
+        *[ DEBUG ] - ON CONSECUTIVE straight check I wasn't cleaning up both my lists first and removing the word 'empty_slot' from the suits list and it was failing the 
+                    CONSECUTIVE test now is fixed!!
+
+    ON 1/10/21  -   [ TODAYS WORK 4 HOURS ] CREATED ai_moves_decider.js SCRIPT FOR ITEMS 1-3 BELOW 75% COMPLETE 
+
+    ON 1/9/21 : AI THOUGHTS   [ TODAYS WORK 5 HOURS ]
+        * 1 <<-IN PROCESS->> ASSESS TILES FOR INITIAL LAYDOWN OF 15+ POINTS
+        * 2 <<-IN PROCESS->> ASSESS AI TILE RACK FOR 3-4 OF KIND
+        * 3 <<-IN PROCESS->> ASSESS AI TILE RACK FOR STRAIGHT
+        * 4 [ PENDING ] ACQUIRE AVAILBLE TILES THAT CAN BE PLAYED - LOOK FOR MATCH IN TILE RACK
+        * 5 [ PENDING ] SPLIT EXISTING GROUPS TO PLACE TILES 
+        * 6 <<-IN PROCESS->> ADD TILES TO BOARD INTO GROUPS
+        * 7 [ PENDING ] CREATE BUTTONS - TO PLAY AI MOVE, JUST CALL THIS FROM CONSOLE 
+
+        TESTING : 
+        - <<-DONE->> CREATE A TEST SCRIPT WITH ITS OWN HTML FILE 
+        - <<-DONE->> CREATE AI SCRIPT IN SEP SCRIPT
+
+        * [STARTED 1/10/21 75% COMPLETE ]--
+          [ INITIAL LAYDOWN ]] ASSESS  OF 15+ POINTS:
+            - EVAL TILE RACK, PLACE TILES IN LISTS, THEN EVAL LIST 
+                OF KIND  -> IF TILE == 3 , OFKIND_LIST[TILE_NUMBER].PUSH(TILE_ID...)
+                STRAIGHT -> IF TILE == 3 , 
+                    1. GRAB SUIT, tile.split(".")[0]
+                    2.0  APPLY TO LIST 
+                        2.1 - IF SUIT LIST !INCLUDES TILE, SUIT_LIST[TILE_NUMBER].PUSH(TILE)
+                    3. ONCE ALL TILES ASSIGNED 
+                        << In test file I have starting +working version of this >>
+                        3.1 - SUIT LIST = IE [ 1,2,'',4,5,6,7,'','','','',12]
+                        3.2 -xxx--split doesnt work--xxx SUIT_LIST.SPLIT BY " ", INTO SEP LIST IF SPACE DETECTED = [1,2], [4,5,6,7], [12]
+                        3.3 - FOR ( I OF SUIT_LIST_GROUPS)
+                                    IF (I.LENGTH > 3 ) TILES_TO_PLAY.PUSH(I)
+
+                        3.4 - SUM IT - ADD TO FIRST_MOVE_PT_SUM, 
+                                    SUM THE ARRAY  using reduce  "NOTE (IF NOT FIRST MOVS IS ELIGIBLE TO PUT GROUP DOWN  )"
+                            
+                                            // moshes version 
+                                            function sumItUp2(...items ){ // remove a,b we are not accessing those
+                                            //if ( items.length === 1 && Array.isArray(items[0] ))
+                                            items = [...items[0]];
+                                            return items.reduce( (a,b) => a+b);
+                                            }
+                
+            *[ AI ADD TILES TO BOARD ] - <<--IN PROCESS-->>
+                    ....! 1/9/21 GOT THIS WORKING TODAY -FOR BRAND NEW GROUPS- IN CONSOLE I ENTHER makeTileGraphic( tileId , append_to_id )
+                    and it slowly animates to tile slot being the append_to_id, now I need to try dynamically creating 
+                    group and slot and adding to it... ,
+                    NOW HAVE DYNAMIC GROUP CREATION AND DELAYED TIMING - WORKS GREAT!!
+
+                * IF TARGET GROUP EXISTS: ( ...TILE APPEARS ON SCREEN THEN MOVES TO AND SNAPS INTO GROUP SLOT )
+                    1- IF TILE IS AND END TILE 
+                    2- DETERMINE LOCATION OF END SLOT - GET ID 
+                    3- GENERATE AI TILE FROM AI LIST - BY PASSING THROUGH CREATENEWTILEGRAPHIC()
+                    4- APPEND IT TO THAT SLOT BUT GIVE IT POS ABSOLUTE AND TOP LEFT LOCATION OF UPPER LEFT OR RIGHT
+                    5- THEN SET ITS LEFT RIGHT TO MATCH SLOT LEFT RIGHT LOCATION
+                    6- THEN CSS TRANSITIONS SHOULD MOVE IT THERE WITH 1 SECOND DELAY
+                    7- EITHER WAIT 1 SECOND OR CHECK IF TILE WITHIN LOCATION OF SLOT AND CHANGE ITS POS TO RELATIVE AND RESET LEFT AND RIGTH TO 0
+                    8- THE TILE SHOULD POP INTO DESIRED SLOT 
+                    9- THEN CREATE A NEW SLOT IN THAT GROUP USING EXISTING FUNCTION
+
+                  * IF TARGET GROUP DOES NOT EXIST:
+                    1- GENERATE NEW GROUP THROUGH EXISTING FUNCTION
+                    2. GENERATE NEW SLOT THROUGH EXISITNG FUNC
+                    3. GET ID OF NEW SLOT 
+                    4. FOLLOW STEPS 4-9 ABOVE                
+
+
+
+
+VERSION 7.5 : ON 1/4/21 : MAJOR CODING BENDER !! 5PM-1AM  - GROUPS VALIDITY CHECK ./
+                        - CREATED algorithm to assess validity of 3-4 kind and straights and attaching specific error messages to error groups 
+                        - for the 3 of kind was a bit over done but the assessment sort of starts there if length of group is 3-4 
+                        **THE LAST THING TO DO HERE : 
+                                        a. apply correct error message for improper 3 - 4 of kind with dupe suits 
+                                            - clean up code 
+                                            - place in sep script
+                                        b. include treatment for JACKS!!!!! JJJJJJjjjjJJJJJJJJJjjjjjJJJJJJJJJJJJ 
+
+VERSION 7 : ON 1/3/21 : ABOUT <3 HOURS ABLE TO EVALUATE TILE GROUPS 
+                        -/- ABLE TO GATHER ALL TILE GROUPS AND BREAK TILES INTO SEPERATE SUIT AND NUMBER LISTS FOR EASY VALIDATION CHECKS 
+                        -/- CHECKING FOR NOT HAVING ENOUGH TILES, AND HAVING A BLANK IN THE MIDDLE, IF ERROR FOUND I OUTLINE GROUP IN RED
+                        -?- NEED TO CHECK FOR 3-4 OF A KIND AND STRAIGHT FLUSHES AND WE'RE DONE 
+                        -?- ALSO NEED TO CHECK FOR LOOSE TILES NOT PARENTED 
+
+VERSION 6 : ON 1/2/21  END OF 3 HOURS - NOW TILE SLOTS DELETE ONLY ON MOUSE IN AND OUT OF TILE GROUP CONTAINER
+            PRETTY MUCH WORKS BUT REGARDLESS OF MOUSE IN AND OUT OF A DIV GROUP LETS JUST ALWAYS EVALUATE THAT THERE SHOULD JUST BE ONE
+            BLANK SLOT -- 
+
+
+Version 5 as of 1/1/2021 (to dos ) 
+    1.) dynamically create tile slots in tile containers always leaving one extra blank slot for reorganizing,
+            - each slot will have id corresponding to their group and slot number (mostly works most important they all have a unique id and corresponds to parent div id)
+            - slot zero will indicate if the grouping is a sequential straigh flush or 3-4 of a kind ( this wasnt realistic ?? )
+            - when the solution check looks at slot zero it will know which algorithm to utilize 
+            - when deparenting a tile from a group do NOT delete the empty slot it came from until we hover out of the parent 
+                - this is for reorganizing within the group - so on the parent div have a function call on hover out that
+                    if we have listed a slot id to be removed from a deparenting event - then do so - but it looks like 
+                    we will have to preform more checks - because if you move a tile into that empty slot meaning we rearrange everything 
+                    back into all same slots then we wouldnt delete any-only when we hover out and we are taking the tile out we just removed
+
+    2.) prevent overlap of tile containers - setting their margins to great buffers 
+        -[did not work ] =setting margins only affects when the element is generated, not always checking margin encroachments after birth
+        -i will prob have to create a check looking at where all elements are and moving them accordingly
+    3.) create lists : 
+            a.) PLAYER MOVES: list of all tiles player removes from their board each turn , reset on each turn
+                    prevent player from placing any tiles in tile rack other than the ones they remove from their tile rack
+            b.) GAME STATE: list of game state after each successful turn, so can reset if player screws everything up
+            c.) AFFECTED GROUPS PER TURN : a list of all groups altered per turn, we will only find and iterate through these 
+                checking for errors 
+Version 5 was successful at dynamically implementing slots within tile container groups and removing - however it is not easy for player 
+        to organize a group as when a tile is decoupled from slot it auto deletes that slot and on parent of new slot creates another we 
+        only need slots created when dragging a new tile into an existing group and only delete on taking a tile out. 
+        The solution is to create function on hover in and hover out of the parent container, if we hover in with a new tile then we
+        will create a new extra slot if we remove a tile then we will remove a slot 
+        I WILL TRY ABOVE ON VERSION 6 ...AS I HAVE TO REWORK SLOT CREATION  
+
+Version 4 update as of 12/21/20 : This was a great day everything i wanted to do happened, i was rapidly conceputalizing, prototyping, testing and implementing solutions in a 4-6 hour period!
+        - redesigned the container parent design, ditching the parenting bond btwn move tab and tile container 
+        - instead now move tab and tile containers move in synch with code matching their top and left coordinates
+        - now the move tab and tile container have different functions that call onhover making it much MUCH easier
+            to control parenting and resetting
+        - this change has reduced many lines of code and cleaner functionality
+
+
+// GO HERE UNDERSTAND CHILD PARENT NODES EXAMO=PLES
+//  https://www.w3schools.com/jsref/prop_node_childnodes.asp
+//https://stackoverflow.com/questions/10186192/javascript-sort-of-html-elements
+
+/*
+  NOTES :11/29/20 -(PRIOR TO TODAY - GOT FOLLOWING TO WORK IN PROP 6-8 HOURS OVER 3 DAYS
+                    - CLICK AND DRAG TILE AND DIV, PARENT UNPARNET TO DIV, DYNAMIC RANDOM GENERATE TILES, FORMAT TILES )
+
+        1.) HOW TO PARENT UNPARENT TILE KEEPING CURR POS ON SCREEN
+            - << WORKING >> SET POS = ABSOLUTE ON CLICK , SET TOP AND LEFT COORDINATES OF TILE DIR AFTER UNPARENT
+                * using window.event.clientX or Y we get x y of mouse pos
+                        parented_tile.style.top = window.event.clientY + "px";
+                        parented_tile.style.left = window.event.clientX  + "px";
+                       !! 12/13/20 UPDATE FORCED DRAG elmnt variable to be id of selected list when deparenting to keep dragging deparented obj
+
+
+        2.) CREATE NEW DIV ON DRAG OBJ RELEASE
+            - player drag tile to board release auto parent to new div
+            - player drag tile out of existing div gropu auto parent to new div
+          
+        3.) DELETE DIV  - player drag all tiles out of div - delete div
+        4.) AUTO SORT DIV ON PLAYER DROP TILE IN DIV GROUP - 
+            - FOR LOOP THROUGH CHILD NODE - COMPARE ID VALS - PREAPPEND TO FRONT IF LESS THAN THE CURR MIN OR APPEND IF GREATER THAN CURR MAX
+        5.) REJECT INELIGIBLE TILE FROM PLAYER DROP IN GROUP - DEDUCT 1 FROM PLAYER BOARD MOVES , 3 WRONG PER TURN
+        6.) COPY PLAYER AND BOARD LISTS PRIOR TO PLAYER MOVE - IN EVENT THEY SCREW IT ALL UP AND HAVE TO REVERT
+        7.) << WORKING >> -- ADJUST "WIDTH" OF DIV BY NUMBER OF TILES IN DIV BY - CHECKING DIV LENGTH OF CHILDREN AT EACH DETACH FUNC
+        8.) << wORKING 12-15 >> CREATE PLAYER TILE RACK > WHERE THEY CAN REORGANIZE IT BY HAVING INDIV PARENT DIV SLOTS IN THE BOARD
+
+     
+            
+ 
+*/
