@@ -1,4 +1,96 @@
    
+    
+    ===========================================================================
+    |                                                                         |
+    |             -  ALL FINAL ITEMS FOR BETA RELEASE 1.O  -                  |
+    |                                                                         |
+    |                                                 list started 2/23/21    |
+    ===========================================================================
+
+
+    ____________________________________________________________________________________________________________
+    [1] [ AI MOVE APPEND BOTH ENDS ] -- { STATUS : IN DEV } { DATE STARTED: 2/23/21 } { DATE COMPLETE: }
+
+        * IMPROVE CODE TO UNPACK 'APPEND BOTH ENDS' TO 2 SEP OBJ INSTRUCTIONS - APPEND AND PREPEND
+         >> WORKING - NOW CODE IS CORRECTLY RETURNING 2 OBJECTS FOR APPEND AND PREPEND , ALTHOUGH WE HAVE A BUG WITH APPEND 
+            APPENDING SOMETIMES TO THE FIRST EMPTY SLOT ON THE FAR LEFT OF GROUP - REVIEW /REFACTOR THE APPEND TILE FUNCTION  
+   
+    ____________________________________________________________________________________________________________
+    [2]  [ AI GLITCH TILES ]  -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+    
+        1. NOTICING DUPLICATES OF 12,13 BEING PLAYED SOMETHING IS WRONG WITH THE CODE 
+          LOOK  AT AI PLAYABLE TILES NEAR END OF OUR 1-13 DICTIONARY
+
+        2. IF EMPTY SLOT IS IN FRONT OF GROUP AI APPENDS TO FIRST OR LARGEST EMPTY SLOT IT DOES NOT CHECK 
+            IF SLOT IS THE LAST EMPTY SLOT - EVOLVE CODE TO FIND LAST EMPTY SLOT AS USED IN RECENT METHODS - I THINK THAT FUNCTION ALREADY EXISTS 
+    ____________________________________________________________________________________________________________
+    [3]  [ AI STEAL FROM OTHER GROUPS TO MAKE GROUP ] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+
+    ____________________________________________________________________________________________________________
+    [4]  [ PLAYER INTERACTIVITY RESTRICTIONS DURING OTHER PLAYER MOVE ] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+
+    ____________________________________________________________________________________________________________
+    [5]  [ PLAYER CAN ONLY PLACE UNPLAYED PLAYER TILES BACK INTO TILE RACK ] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+
+    ____________________________________________________________________________________________________________
+    [6]  [ RESET ENTIRE BOARD IF PLAYER ERRORS 3 TIMES ]-- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+
+        * TAKE A SNAP SHOT OF ALL INNER HTML, IF PLAYER CAN NOT CORRECT THEIR ERROR TILE GROUPS AFTER 3 ATTEMPTS 
+            THE BOARD RESETS TO STATE BEFORE PLAY AND THEY DRAW ONE TILE 
+
+    ____________________________________________________________________________________________________________
+    [7]  [  ADD MULTIPLE AI PLAYERS ] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+
+        * CURR ONLY 1 AI PLAYER AVAIL, W/ 2 OR 3 MORE TILE OPPERTUNITIES WOULD BE AVAIL
+            REQUIRES A ASYNC REQUEST TO COMPLETE PER PLAYER BEFORE NEXT CAN PLAY 
+
+    ____________________________________________________________________________________________________________
+    [8]  [ REDUCE SCALE OF GRAPHICS ] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+
+    ____________________________________________________________________________________________________________
+    [9]  [ UI - GAME SETUP ] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+
+         * PLAYER DETERMINES HOW MANY AI PLAYERS , HUMAN PLAYERS
+
+    ____________________________________________________________________________________________________________
+    [10]  [ UI - GAME STATUS ] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+
+        * HEADER SHOWING, 1. CURR PLAYER, 2. LAST MOVES MADE, 3. TILES REMAINING,
+
+    ____________________________________________________________________________________________________________
+    [11]  [  SAVE GAME ] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+
+       * SAVE GAME STATE TO TEXT OR CSV FILE , EITHER ALL INNER HTML OR PLAYER LISTS, GAMEBOARD LISTS
+
+    ____________________________________________________________________________________________________________
+    [12]  [  UI - TILE GROUPS ] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+
+        1. ALWAYS HAVE EMPTY SLOTS AT EACH END OF TILE GROUPS
+        2. ABILITY TO SPLIT GROUP AUTO CREATES 2 GROUPS FROM ONE WITHOUT PLAYER HAVING TO MANUALLY DO IT
+        3. SCALE DOWN GROUPS NOT IN USE TO MAKE ROOM, NO EASY FIX HAVE TO MANUALLY TWEAK ALL WIDTHS AND OFFSETS
+            - NOT SURE HOW THIS AFFECTS TABLET DEVICES ...AS A SCALE BUTTON CREATES ISSUES WITH MOUSE OFFETS ON DRAG...
+        4. HIGHLIGHT - HOVERED EMPTY SLOTS 
+        5. AI PLACE GROUPS STAGGERED INSTEAD OF SAME LOCATION (AND OR AUTO ARRANGE )
+        6. EXPAND WIDTH  PLAYER RACK ON DRAWING TILE AND RACK FULL
+        7. REDUCE WIDTH  PLAYER RACK AFTER PLAYING IF GREATER THAN 14 SLOTS 
+
+    ____________________________________________________________________________________________________________
+    [13]  [ 'PLAYER TILE LIST STARTS WITH 16 NOT 14 TILES ] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+
+    ____________________________________________________________________________________________________________
+    [] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+    ____________________________________________________________________________________________________________
+    [] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+    ____________________________________________________________________________________________________________
+    [] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+    ____________________________________________________________________________________________________________
+    [] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+
+
+   
+    
+    
+    
     ====================
     ON 2/18/21 THURSDAY
     =====================
@@ -8,7 +100,7 @@
     <ERROR> FROM TIME TO TIME RANDOMLY , THE FOLLOWING VAR < ai_tiles_to_play: > WILL SEND A DUPLICATE SET OF TILE TO PUT ON THE BOARD  
     * THERE IS A RANDOM ERROR - WHERE DUPLIATES SENT TO THE BOARD BY AI
     * ON MONDAY i WIRED UP THE APP SO I AUTO PLAY THE AI AFTER HITTING THE CHECK GROUP BUTTON 
-    * WROTE SEVERAL algorithmS TO ASSESS ME PLAY AND DETERMINE IF NEEDEED A NEW TILE 
+    * ON MONDAY WROTE SEVERAL algorithmS TO ASSESS PLAYER ACTIONS AND DETERMINE IF PLAYER DRAWS A NEW RANDOM TILE 
 
 
     ====================
