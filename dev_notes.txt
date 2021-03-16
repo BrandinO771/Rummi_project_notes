@@ -9,23 +9,35 @@
 
 
     ____________________________________________________________________________________________________________
-    [1] [ AI MOVE APPEND BOTH ENDS ] -- { STATUS : IN DEV } { DATE STARTED: 2/23/21 } { DATE COMPLETE: }
+    [1] [ AI MOVE APPEND BOTH ENDS ] -- { STATUS : COMPLETE } { DATE STARTED: 2/23/21 } { DATE COMPLETE: 2/27/21 }
 
         * IMPROVE CODE TO UNPACK 'APPEND BOTH ENDS' TO 2 SEP OBJ INSTRUCTIONS - APPEND AND PREPEND
          >> WORKING - NOW CODE IS CORRECTLY RETURNING 2 OBJECTS FOR APPEND AND PREPEND , ALTHOUGH WE HAVE A BUG WITH APPEND 
             APPENDING SOMETIMES TO THE FIRST EMPTY SLOT ON THE FAR LEFT OF GROUP - REVIEW /REFACTOR THE APPEND TILE FUNCTION  
    
     ____________________________________________________________________________________________________________
-    [2]  [ AI GLITCH TILES ]  -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+    [2]  [ AI GLITCH TILES ]  -- { STATUS : STARTED } { DATE STARTED: 2/27/21 } { DATE COMPLETE: }
     
         1. NOTICING DUPLICATES OF 12,13 BEING PLAYED SOMETHING IS WRONG WITH THE CODE 
-          LOOK  AT AI PLAYABLE TILES NEAR END OF OUR 1-13 DICTIONARY
+          LOOK  AT AI PLAYABLE TILES NEAR END OF OUR 1-13 DICTIONARY <<watching tested for this with several 11-13 groups>>
 
-        2. IF EMPTY SLOT IS IN FRONT OF GROUP AI APPENDS TO FIRST OR LARGEST EMPTY SLOT IT DOES NOT CHECK 
+        2. << SOLUTION IMPLEMENTED & TESTING >> -IF EMPTY SLOT IS IN FRONT OF GROUP AI APPENDS TO FIRST OR LARGEST EMPTY SLOT IT DOES NOT CHECK 
             IF SLOT IS THE LAST EMPTY SLOT - EVOLVE CODE TO FIND LAST EMPTY SLOT AS USED IN RECENT METHODS - I THINK THAT FUNCTION ALREADY EXISTS 
     ____________________________________________________________________________________________________________
-    [3]  [ AI STEAL FROM OTHER GROUPS TO MAKE GROUP ] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
-
+    [3]  [ AI STEAL FROM OTHER GROUPS TO MAKE HYBRID GROUP ] -- { STATUS : IN DEV} { DATE STARTED: 3/2/21 } { DATE COMPLETE:3/ /21 }
+            1. wrote script to find available tiles at ends of existing straight groups - 
+                > COMPLETE >> < 3/08/21 > < need to expand to be able to take 1-2 tiles from end of group
+                > COMPLETE >> < 3/15/21 > < need to expand to take tile from middle of large group by spliting grp in 2
+                > COMPLETE < AS OF 3/9/21 > WROTE 400 line script to algorithmicly create key value OBJ groups for creating hybrid groups 
+                > COMPLETE >> < 3/16/21 > to wrap as a function and integrate with rumi_brain.js
+    ____________________________________________________________________________________________________________
+    [3.5]  [ PLACE HYBRID TILES GROUPS ON BOARD ] -- { STATUS : TESTING } { DATE STARTED: 3/13/21 } { DATE COMPLETE:3/15/21 }
+            2. need to write script to unpack valid group of found tiles to the gameboard
+              -NOTES : this required the use of several js Promise objs to wait for animations to play and synchronize  each group creation
+    ____________________________________________________________________________________________________________
+    [3.7]  [ AI SWAP 3 OF KIND TILE TO STEAL ONE TO MAKE NEW ] -- { STATUS : NOT STARTED} { DATE STARTED: /21 } { DATE COMPLETE//21 }
+            1. need to expand to steal from 3 of a kind and replace with suit with same num diff suit {this is its own}
+    
     ____________________________________________________________________________________________________________
     [4]  [ PLAYER INTERACTIVITY RESTRICTIONS DURING OTHER PLAYER MOVE ] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
 
@@ -53,44 +65,61 @@
          * PLAYER DETERMINES HOW MANY AI PLAYERS , HUMAN PLAYERS
 
     ____________________________________________________________________________________________________________
-    [10]  [ UI - GAME STATUS ] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+    [10]  [ UI - GAME STATUS ] -- { STATUS : STARTED } { DATE STARTED: 2/28/21 } { DATE COMPLETE: }
 
-        * HEADER SHOWING, 1. CURR PLAYER, 2. LAST MOVES MADE, 3. TILES REMAINING,
+        * HEADER SHOWING, 
+        1. CURR PLAYER, {-COMPLETED 3/1-}  
+        2. LAST MOVES MADE, {-COMPLETED 3/1-} 
+        3. <<PENDING>> TOTAL AVAILABLE TILES REMAINING,
+            - REALIZED I HAD ISSUES WITH MY DELETE METHOD OF PLAYER PLAYED TILES FROM PLAYER LIST 
+                YOU CANT EFFECTIVELY FOR LOOP SPLICE OUT TILES PLAYED IT MESSES UP THE FOR LOOP 
 
     ____________________________________________________________________________________________________________
-    [11]  [  SAVE GAME ] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+    [11]  [  SAVE GAME ] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DA/TE COMPLETE: }
 
        * SAVE GAME STATE TO TEXT OR CSV FILE , EITHER ALL INNER HTML OR PLAYER LISTS, GAMEBOARD LISTS
 
     ____________________________________________________________________________________________________________
-    [12]  [  UI - TILE GROUPS ] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+    [12]  [  UI - TILE GROUPS ] -- { STATUS : IN DEV } { DATE STARTED: 2/28/21 } { DATE COMPLETE: }
 
-        1. ALWAYS HAVE EMPTY SLOTS AT EACH END OF TILE GROUPS
+        1. ALWAYS HAVE EMPTY SLOTS AT EACH END OF TILE GROUPS - { POSSIBLY NOT }
         2. ABILITY TO SPLIT GROUP AUTO CREATES 2 GROUPS FROM ONE WITHOUT PLAYER HAVING TO MANUALLY DO IT
         3. SCALE DOWN GROUPS NOT IN USE TO MAKE ROOM, NO EASY FIX HAVE TO MANUALLY TWEAK ALL WIDTHS AND OFFSETS
             - NOT SURE HOW THIS AFFECTS TABLET DEVICES ...AS A SCALE BUTTON CREATES ISSUES WITH MOUSE OFFETS ON DRAG...
-        4. HIGHLIGHT - HOVERED EMPTY SLOTS 
-        5. AI PLACE GROUPS STAGGERED INSTEAD OF SAME LOCATION (AND OR AUTO ARRANGE )
+        4. {-COMPLETED 2/28-} - HIGHLIGHT - HOVERED EMPTY SLOTS 
+        5. {-COMPLETED 3/1-}  - AI PLACE GROUPS STAGGERED INSTEAD OF SAME LOCATION 
         6. EXPAND WIDTH  PLAYER RACK ON DRAWING TILE AND RACK FULL
-        7. REDUCE WIDTH  PLAYER RACK AFTER PLAYING IF GREATER THAN 14 SLOTS 
+        7. REDUCE WIDTH  PLAYER RACK AFTER PLAYING IF GREATER THAN 14 SLOTS
+        8.  {-COMPLETED 3/10-} WIDTH OF GROUPS - DYNAMICALLY THEY ARE A BIT GLITCHY - DONT FIX UNTIL WE FINALIZED THE SCALE OF THE GRAPHICS 
+        9. AUTO ARRANGE GROUPS --{ I HAVE WRITTEN A SORT FUNC SO I COULD SORT PLAYER LIST THEN REAPPEND ALL THEIR TILES IN ORDER }
+        10.< 3/10/21 > FIXED - MOUSE DRAG OFFSET IF PAGE WAS SCROLLED DOWN , CHANGED MOUSE POS FROM CLIENT TO PAGE
+    ____________________________________________________________________________________________________________
+    [13]  [ 'PLAYER TILE LIST STARTS WITH 16 NOT 14 TILES ] -- { STATUS : COMPLETE } { DATE STARTED: 2/28/21 } { DATE COMPLETE:2/28/21 }
 
     ____________________________________________________________________________________________________________
-    [13]  [ 'PLAYER TILE LIST STARTS WITH 16 NOT 14 TILES ] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+    [14]  [INCLUDE 4 JOKERS - 1 FOR EACH SUIT ] { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+    ____________________________________________________________________________________________________________
+    [15]  [ REMOVE EMPTY LIST FROM glp list ] -- { STATUS : COMPLETE } { DATE STARTED: 3/1/21 } { DATE COMPLETE:3/1/21 }
+       - using filter removed empty suit lists available tile list and modify the random picking code accordingly
+    ____________________________________________________________________________________________________________
+    []  [ TOPIC ] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+        ____________________________________________________________________________________________________________
+    []  [ TOPIC ] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+        ____________________________________________________________________________________________________________
+    []  [ TOPIC ] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
+        ____________________________________________________________________________________________________________
+    []  [ TOPIC ] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
 
-    ____________________________________________________________________________________________________________
-    [] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
-    ____________________________________________________________________________________________________________
-    [] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
-    ____________________________________________________________________________________________________________
-    [] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
-    ____________________________________________________________________________________________________________
-    [] -- { STATUS : NOT STARTED } { DATE STARTED: /21 } { DATE COMPLETE: }
 
+    =======================
+    AS OF  3/16/21 TUESDAY
+    =======================
+    * NOW HAVE A INFO BAR = LAST MOVES PLAYED, CURR PLAYER TURN
+    * NOW HAVE A CHIME WHEN OTHER PLAYER COMPLETES TURN
+    * NEW ALGORITHM COMPUTER CAN IDENTIFY TILES TO STEAL FROM OTHER GRPS TO MAKE NEW HYBRID GRPS 
+    * NEW ALGORITHM TO VISUALLY PLACE HYBRID GRPS ON BOARD
+    * POSTED DEV LOG VIDEO OF GAME STATUS ON YOUTUBE AND LINKEDIN
 
-   
-    
-    
-    
     ====================
     ON 2/18/21 THURSDAY
     =====================
